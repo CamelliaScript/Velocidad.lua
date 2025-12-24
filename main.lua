@@ -6,7 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
 local LocalPlayer = Players.LocalPlayer
-local SPEED = 16 -- velocidad real (ajusta si quieres)
+local SPEED = 0.3 -- velocidad real (ajusta si quieres)
 
 local tpwalking = true
 local connection = nil
