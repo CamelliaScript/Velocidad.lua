@@ -1,4 +1,4 @@
--- TPWalk con toggle G
+-- TPWalk estable con Toggle G
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
@@ -6,46 +6,59 @@ local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
 local LocalPlayer = Players.LocalPlayer
-local SPEED = 0.3
+local SPEED = 16 -- velocidad real (ajusta si quieres)
 
-local tpwalking = true -- ACTIVADO POR DEFECTO
-local runningThread = nil
-
---------------------------------------------------
--- FUNCIÓN TPWALK
---------------------------------------------------
-local function tpwalk()
-	if runningThread then return end
-
-	runningThread = task.spawn(function()
-		while tpwalking do
-			local character = LocalPlayer.Character
-			local humanoid = character and character:FindFirstChildWhichIsA("Humanoid")
-
-			if humanoid and humanoid.MoveDirection.Magnitude > 0 then
-				local delta = RunService.Heartbeat:Wait()
-				character:TranslateBy(humanoid.MoveDirection * SPEED * delta * 10)
-			else
-				RunService.Heartbeat:Wait()
-			end
-		end
-		runningThread = nil
-	end)
-end
+local tpwalking = true
+local connection = nil
 
 --------------------------------------------------
 -- NOTIFICACIÓN
 --------------------------------------------------
 local function notify(title, text)
-	StarterGui:SetCore("SendNotification", {
-		Title = title,
-		Text = text,
-		Duration = 1.5
-	})
+	pcall(function()
+		StarterGui:SetCore("SendNotification", {
+			Title = title,
+			Text = text,
+			Duration = 1.5
+		})
+	end)
 end
 
 --------------------------------------------------
--- TOGGLE CON G
+-- START TPWALK
+--------------------------------------------------
+local function startTPWalk()
+	if connection then return end
+
+	connection = RunService.Heartbeat:Connect(function(dt)
+		if not tpwalking then return end
+
+		local char = LocalPlayer.Character
+		if not char then return end
+
+		local hum = char:FindFirstChildWhichIsA("Humanoid")
+		local hrp = char:FindFirstChild("HumanoidRootPart")
+		if not hum or not hrp then return end
+
+		local moveDir = hum.MoveDirection
+		if moveDir.Magnitude > 0 then
+			hrp.CFrame = hrp.CFrame + (moveDir * SPEED * dt)
+		end
+	end)
+end
+
+--------------------------------------------------
+-- STOP TPWALK
+--------------------------------------------------
+local function stopTPWalk()
+	if connection then
+		connection:Disconnect()
+		connection = nil
+	end
+end
+
+--------------------------------------------------
+-- TOGGLE G
 --------------------------------------------------
 UserInputService.InputBegan:Connect(function(input, gp)
 	if gp then return end
@@ -53,10 +66,11 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		tpwalking = not tpwalking
 
 		if tpwalking then
-			tpwalk()
-			notify("TPWALK⚡", "Activado")
+			startTPWalk()
+			notify("TPWALK ⚡", "Activado")
 		else
-			notify("TPWALK💤", "Desactivado")
+			stopTPWalk()
+			notify("TPWALK 💤", "Desactivado")
 		end
 	end
 end)
@@ -65,13 +79,13 @@ end)
 -- RESPAWN SAFE
 --------------------------------------------------
 LocalPlayer.CharacterAdded:Connect(function()
+	task.wait(0.2)
 	if tpwalking then
-		task.wait(0.2)
-		tpwalk()
+		startTPWalk()
 	end
 end)
 
 --------------------------------------------------
--- INICIO AUTOMÁTICO
+-- AUTO START
 --------------------------------------------------
-tpwalk()
+startTPWalk()
