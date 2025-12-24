@@ -1,4 +1,4 @@
--- TPWalk estable con Toggle G
+-- TPWalk estable con Toggle F
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
@@ -6,7 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
 local LocalPlayer = Players.LocalPlayer
-local SPEED = 3 -- velocidad real (ajusta si quieres)
+local SPEED = 3 -- equivalente exacto al 0.3 viejo
 
 local tpwalking = true
 local connection = nil
@@ -58,11 +58,11 @@ local function stopTPWalk()
 end
 
 --------------------------------------------------
--- TOGGLE G
+-- TOGGLE CON F
 --------------------------------------------------
 UserInputService.InputBegan:Connect(function(input, gp)
 	if gp then return end
-	if input.KeyCode == Enum.KeyCode.G then
+	if input.KeyCode == Enum.KeyCode.F then
 		tpwalking = not tpwalking
 
 		if tpwalking then
