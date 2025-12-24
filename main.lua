@@ -6,7 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
 local LocalPlayer = Players.LocalPlayer
-local SPEED = 0.4
+local SPEED = 0.3
 
 local tpwalking = true -- ACTIVADO POR DEFECTO
 local runningThread = nil
@@ -36,9 +36,9 @@ end
 --------------------------------------------------
 -- NOTIFICACIÓN
 --------------------------------------------------
-local function notify(text)
+local function notify(title, text)
 	StarterGui:SetCore("SendNotification", {
-		Title = "TPWalk",
+		Title = title,
 		Text = text,
 		Duration = 1.5
 	})
@@ -53,10 +53,10 @@ UserInputService.InputBegan:Connect(function(input, gp)
 		tpwalking = not tpwalking
 
 		if tpwalking then
-			notify("¡Hora de correr!⚡")
 			tpwalk()
+			notify("TPWALK⚡", "Activado")
 		else
-			notify("Hora de caminar💤")
+			notify("TPWALK💤", "Desactivado")
 		end
 	end
 end)
@@ -74,5 +74,4 @@ end)
 --------------------------------------------------
 -- INICIO AUTOMÁTICO
 --------------------------------------------------
-notify("¡Hora de correr!⚡")
 tpwalk()
