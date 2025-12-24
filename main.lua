@@ -1,4 +1,4 @@
--- TPWalk estable con Toggle F
+-- TPWalk estable con Toggle F (respawn desactivado)
 
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
@@ -8,7 +8,7 @@ local StarterGui = game:GetService("StarterGui")
 local LocalPlayer = Players.LocalPlayer
 local SPEED = 3 -- equivalente exacto al 0.3 viejo
 
-local tpwalking = true
+local tpwalking = false -- AHORA ARRANCA APAGADO
 local connection = nil
 
 --------------------------------------------------
@@ -76,16 +76,10 @@ UserInputService.InputBegan:Connect(function(input, gp)
 end)
 
 --------------------------------------------------
--- RESPAWN SAFE
+-- RESPAWN SAFE (SIEMPRE APAGADO)
 --------------------------------------------------
 LocalPlayer.CharacterAdded:Connect(function()
-	task.wait(0.2)
-	if tpwalking then
-		startTPWalk()
-	end
+	-- al respawnear se apaga sí o sí
+	tpwalking = false
+	stopTPWalk()
 end)
-
---------------------------------------------------
--- AUTO START
---------------------------------------------------
-startTPWalk()
